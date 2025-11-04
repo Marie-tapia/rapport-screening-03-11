@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Comparatif SLR - Analyse des Performances</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #366092 0%, #2a4a73 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .export-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .export-btn:active {
+            transform: translateY(0);
+        }
+
+        .export-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #366092;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #366092;
+        }
+
+        .section h3 {
+            color: #2a4a73;
+            font-size: 1.5em;
+            margin: 30px 0 15px 0;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .summary-box p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .summary-box strong {
+            color: #366092;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #366092;
+        }
+
+        .card-title {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #366092;
+            margin: 10px 0;
+        }
+
+        .card-label {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.9em;
+        }
+
+        thead {
+            background: #366092;
+            color: white;
+        }
+
+        th {
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .slr-name {
+            text-align: left;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .avg-row {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .avg-row td {
+            border-top: 2px solid #366092;
+        }
+
+        .legends {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .conclusions {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 5px solid #366092;
+        }
+
+        .conclusions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .conclusions li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .conclusions li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .objectives {
+            background: #fff9c4;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #f57f17;
+            margin: 20px 0;
+        }
+
+        .objectives p {
+            margin: 5px 0;
+        }
+
+        .highlight-new {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+        }
+
+        @media print {
+            .export-btn {
+                display: none;
+            }
+            
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .export-btn {
+                position: static;
+                margin: 20px auto;
+                display: flex;
+                width: fit-content;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 0.75em;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="export-btn" onclick="exportToPDF()">
+        <svg fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/>
+        </svg>
+        Exporter en PDF
+    </button>
+
+    <div class="container" id="report-content">
+        <div class="header">
+            <h1>Rapport Comparatif des Performances</h1>
+            <p>Screening Systématique de Littérature (SLR)</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Date: 3 Novembre 2025</p>
+        </div>
+
+            <!-- TABLEAU COMPARATIF -->
+            <div class="content">
+                <!-- RÉSUMÉ EXÉCUTIF -->
+                <div class="section">
+                    <h2>📊 Résumé Exécutif</h2>
+                    <div class="summary-box">
+                        <p><strong>Objectif:</strong> Comparer les performances de différentes approches pour le screening automatisé d'études biomédicales dans le cadre de revues systématiques de littérature (SLR).</p>
+                        
+                        <p style="margin-top: 20px;"><strong>Approches comparées:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>Picos-ref:</strong> Modèle Qwen avec critères PICOS uniquement (Massinissa)</li>
+                            <li><strong>PICOS+SUJET:</strong> Modèle Qwen avec PICOS + sujet de recherche (Massinissa)</li>
+                            <li><strong>P1-Marie:</strong> Premier prompt optimisé avec modèle Qwen</li>
+                            <li><strong style="color: #e67e22;">P2-Marie:</strong> Votre second prompt simplifié avec modèle Qwen</li>
+                            <li><strong style="color: #4CAF50;">P3-Marie:</strong> Votre prompt optimisé pour le rappel avec Qwen - PICOS uniquement</li>
+                            <li><strong style="color: #2E7D32;">P3-marie+Sujet:</strong> Votre prompt optimisé avec Qwen - PICOS + sujet de recherche</li>
+                            <li><strong style="color: #2196F3;">P4-marie (Topic Gate):</strong> Votre prompt avec filtre de pertinence thématique</li>
+                        </ul>
+                    </div>
+            
+                    <div class="objectives">
+                        <p><strong>🎯 Objectifs de Performance:</strong></p>
+                        <p>• <strong>TPR (Sensibilité/Recall):</strong> ≥ 80% - Capacité à identifier correctement les études pertinentes</p>
+                        <p>• <strong>TNR (Spécificité):</strong> ≥ 70% - Capacité à exclure correctement les études non pertinentes</p>
+                    </div>
+                </div>
+            
+                <!-- TABLEAU COMPARATIF - 7 SLR COMMUNES -->
+                <div class="section">
+                    <h2>📋 Résultats Détaillés - 7 SLR Communes</h2>
+                    
+                    <div class="legends">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #366092;"></div>
+                            <span>Picos-ref (Massinissa)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #5a9bd5;"></div>
+                            <span>PICOS+SUJET (Massinissa)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ffc000;"></div>
+                            <span>P1-Marie</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #e67e22;"></div>
+                            <span>P2-Marie</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #4CAF50;"></div>
+                            <span>P3-Marie</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #2E7D32;"></div>
+                            <span>P3-Marie+Sujet</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #2196F3;"></div>
+                            <span>P4-Marie (Topic Gate)</span>
+                        </div>
+                    </div>
+            
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">SLR</th>
+                                    <th colspan="2">Picos-ref</th>
+                                    <th colspan="2">PICOS+SUJET</th>
+                                    <th colspan="2">P1</th>
+                                    <th colspan="2" style="background: #e67e22;">P2</th>
+                                    <th colspan="2" style="background: #4CAF50;">P3</th>
+                                    <th colspan="2" style="background: #2E7D32;">P3+S</th>
+                                    <th colspan="2" style="background: #2196F3;">P4</th>
+                                </tr>
+                                <tr>
+                                    <th>TPR</th>
+                                    <th>TNR</th>
+                                    <th>TPR</th>
+                                    <th>TNR</th>
+                                    <th>TPR</th>
+                                    <th>TNR</th>
+                                    <th style="background: #e67e22;">TPR</th>
+                                    <th style="background: #e67e22;">TNR</th>
+                                    <th style="background: #4CAF50;">TPR</th>
+                                    <th style="background: #4CAF50;">TNR</th>
+                                    <th style="background: #2E7D32;">TPR</th>
+                                    <th style="background: #2E7D32;">TNR</th>
+                                    <th style="background: #2196F3;">TPR</th>
+                                    <th style="background: #2196F3;">TNR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="slr-table-body">
+                                <!-- Data will be inserted by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            
+                <!-- TABLEAU 14 SLR COMPLÈTES -->
+                <div class="section">
+                    <h2>📋 Résultats Complets - 14 SLR (Tous Modèles Comparés)</h2>
+                    
+                    <p style="margin-bottom: 20px; color: #666;">
+                        Ce tableau présente une comparaison exhaustive de tous les modèles testés sur 14 SLR.
+                    </p>
+
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="min-width: 250px;">SLR</th>
+                                    <th rowspan="2" style="background: #e8eaf6;">Taille</th>
+                                    <th colspan="2" style="background: #5a9bd5;">Picos-ref</th>
+                                    <th colspan="2" style="background: #70ad47;">PICOS+SUJET</th>
+                                    <th colspan="2" style="background: #b39ddb;">ML</th>
+                                    <th colspan="2" style="background: #ff9800;">Qwen<br>(Mass.)</th>
+                                    <th colspan="2" style="background: #ab47bc;">Qwen<br>Canada</th>
+                                    <th colspan="2" style="background: #26a69a;">GPT-4o</th>
+                                    <th colspan="2" style="background: #4CAF50;">P3<br>(Votre)</th>
+                                </tr>
+                                <tr>
+                                    <th style="background: #5a9bd5;">TPR</th>
+                                    <th style="background: #5a9bd5;">TNR</th>
+                                    <th style="background: #70ad47;">TPR</th>
+                                    <th style="background: #70ad47;">TNR</th>
+                                    <th style="background: #b39ddb;">TPR</th>
+                                    <th style="background: #b39ddb;">TNR</th>
+                                    <th style="background: #ff9800;">TPR</th>
+                                    <th style="background: #ff9800;">TNR</th>
+                                    <th style="background: #ab47bc;">TPR</th>
+                                    <th style="background: #ab47bc;">TNR</th>
+                                    <th style="background: #26a69a;">TPR</th>
+                                    <th style="background: #26a69a;">TNR</th>
+                                    <th style="background: #4CAF50;">TPR</th>
+                                    <th style="background: #4CAF50;">TNR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="slr-name">CICATRYL_SOTA_SD</td>
+                                    <td style="text-align: center;">147</td>
+                                    <td>0.87</td>
+                                    <td>0.50</td>
+                                    <td>0.83</td>
+                                    <td>0.68</td>
+                                    <td>0.24</td>
+                                    <td>0.82</td>
+                                    <td>0.87</td>
+                                    <td>0.50</td>
+                                    <td>0.49</td>
+                                    <td>0.50</td>
+                                    <td>0.90</td>
+                                    <td>0.68</td>
+                                    <td>0.80</td>
+                                    <td>0.75</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">CLINICAL_DATA_RM_GM</td>
+                                    <td style="text-align: center;">25</td>
+                                    <td>1.00</td>
+                                    <td>0.17</td>
+                                    <td>1.00</td>
+                                    <td>0.34</td>
+                                    <td>1.00</td>
+                                    <td>0.43</td>
+                                    <td>1.00</td>
+                                    <td>0.17</td>
+                                    <td>0.50</td>
+                                    <td>0.40</td>
+                                    <td>1.00</td>
+                                    <td>0.00</td>
+                                    <td>1.00</td>
+                                    <td>0.22</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">DIA_LARM_BS</td>
+                                    <td style="text-align: center;">68</td>
+                                    <td>0.72</td>
+                                    <td>0.62</td>
+                                    <td>0.83</td>
+                                    <td>0.55</td>
+                                    <td>0.75</td>
+                                    <td>0.46</td>
+                                    <td>1.00</td>
+                                    <td>0.51</td>
+                                    <td>0.33</td>
+                                    <td>0.51</td>
+                                    <td>0.17</td>
+                                    <td>0.85</td>
+                                    <td>0.92</td>
+                                    <td>0.82</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">LUNG_CANCER_LB</td>
+                                    <td style="text-align: center;">218</td>
+                                    <td>0.96</td>
+                                    <td>0.62</td>
+                                    <td>0.94</td>
+                                    <td>0.71</td>
+                                    <td>1.00</td>
+                                    <td>0.00</td>
+                                    <td>0.98</td>
+                                    <td>0.69</td>
+                                    <td>0.50</td>
+                                    <td>0.63</td>
+                                    <td>0.94</td>
+                                    <td>0.63</td>
+                                    <td>0.91</td>
+                                    <td>0.74</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">PCL_EL</td>
+                                    <td style="text-align: center;">215</td>
+                                    <td>0.48</td>
+                                    <td>0.77</td>
+                                    <td>0.48</td>
+                                    <td>0.87</td>
+                                    <td>0.72</td>
+                                    <td>0.33</td>
+                                    <td>0.45</td>
+                                    <td>0.80</td>
+                                    <td>0.31</td>
+                                    <td>0.78</td>
+                                    <td>0.28</td>
+                                    <td>0.90</td>
+                                    <td>0.38</td>
+                                    <td>0.88</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">REVIEW_HRV_ACIDOSE_AW</td>
+                                    <td style="text-align: center;">801</td>
+                                    <td>1.00</td>
+                                    <td>0.36</td>
+                                    <td>0.86</td>
+                                    <td>0.65</td>
+                                    <td>1.00</td>
+                                    <td>0.30</td>
+                                    <td>1.00</td>
+                                    <td>0.36</td>
+                                    <td>0.64</td>
+                                    <td>0.34</td>
+                                    <td>1.00</td>
+                                    <td>0.59</td>
+                                    <td>0.92</td>
+                                    <td>0.66</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">REVIEW_RESORBABLE_POLYCAPROLACTONE_EL</td>
+                                    <td style="text-align: center;">185</td>
+                                    <td>0.91</td>
+                                    <td>0.44</td>
+                                    <td>0.93</td>
+                                    <td>0.48</td>
+                                    <td>0.64</td>
+                                    <td>0.60</td>
+                                    <td>0.95</td>
+                                    <td>0.64</td>
+                                    <td>0.63</td>
+                                    <td>0.48</td>
+                                    <td>0.98</td>
+                                    <td>0.57</td>
+                                    <td>0.95</td>
+                                    <td>0.41</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">SOTA_ICD_BS</td>
+                                    <td style="text-align: center;">6</td>
+                                    <td>0.75</td>
+                                    <td>0.00</td>
+                                    <td>1.00</td>
+                                    <td>0.50</td>
+                                    <td>0.75</td>
+                                    <td>0.50</td>
+                                    <td>0.50</td>
+                                    <td>0.00</td>
+                                    <td>0.25</td>
+                                    <td>0.00</td>
+                                    <td>0.75</td>
+                                    <td>0.50</td>
+                                    <td>0.75</td>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">SOTA_ICD_COMPR_BS</td>
+                                    <td style="text-align: center;">33</td>
+                                    <td>0.77</td>
+                                    <td>0.25</td>
+                                    <td>0.85</td>
+                                    <td>0.55</td>
+                                    <td>0.90</td>
+                                    <td>0.45</td>
+                                    <td>0.77</td>
+                                    <td>0.25</td>
+                                    <td>0.77</td>
+                                    <td>0.35</td>
+                                    <td>1.00</td>
+                                    <td>0.00</td>
+                                    <td>0.85</td>
+                                    <td>0.60</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">SOTA_RM_GH</td>
+                                    <td style="text-align: center;">172</td>
+                                    <td>1.00</td>
+                                    <td>0.02</td>
+                                    <td>1.00</td>
+                                    <td>0.30</td>
+                                    <td>1.00</td>
+                                    <td>0.52</td>
+                                    <td>1.00</td>
+                                    <td>0.13</td>
+                                    <td>0.77</td>
+                                    <td>0.30</td>
+                                    <td>1.00</td>
+                                    <td>0.01</td>
+                                    <td>0.95</td>
+                                    <td>0.27</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">Spring_thread_LW</td>
+                                    <td style="text-align: center;">217</td>
+                                    <td>0.94</td>
+                                    <td>0.55</td>
+                                    <td>0.82</td>
+                                    <td>0.79</td>
+                                    <td>0.94</td>
+                                    <td>0.56</td>
+                                    <td>0.94</td>
+                                    <td>0.55</td>
+                                    <td>0.44</td>
+                                    <td>0.58</td>
+                                    <td>0.96</td>
+                                    <td>0.57</td>
+                                    <td>0.72</td>
+                                    <td>0.87</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">Tachy_SOTA_LW</td>
+                                    <td style="text-align: center;">367</td>
+                                    <td>0.78</td>
+                                    <td>0.73</td>
+                                    <td>0.02</td>
+                                    <td>0.98</td>
+                                    <td>0.84</td>
+                                    <td>0.69</td>
+                                    <td>0.78</td>
+                                    <td>0.73</td>
+                                    <td>0.28</td>
+                                    <td>0.66</td>
+                                    <td>0.73</td>
+                                    <td>0.75</td>
+                                    <td>0.02</td>
+                                    <td>1.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">Teranga_2023_LW</td>
+                                    <td style="text-align: center;">367</td>
+                                    <td>0.77</td>
+                                    <td>0.73</td>
+                                    <td>0.06</td>
+                                    <td>0.99</td>
+                                    <td>0.84</td>
+                                    <td>0.69</td>
+                                    <td>0.77</td>
+                                    <td>0.73</td>
+                                    <td>0.35</td>
+                                    <td>0.68</td>
+                                    <td>0.76</td>
+                                    <td>0.77</td>
+                                    <td>0.06</td>
+                                    <td>1.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="slr-name">WHEELCHAIR_BS</td>
+                                    <td style="text-align: center;">51</td>
+                                    <td>1.00</td>
+                                    <td>0.31</td>
+                                    <td>0.41</td>
+                                    <td>0.84</td>
+                                    <td>0.67</td>
+                                    <td>0.62</td>
+                                    <td>1.00</td>
+                                    <td>0.08</td>
+                                    <td>0.83</td>
+                                    <td>0.00</td>
+                                    <td>0.92</td>
+                                    <td>0.05</td>
+                                    <td>1.00</td>
+                                    <td>0.49</td>
+                                </tr>
+                                <tr class="avg-row" style="background: #f0f0f0; font-weight: bold;">
+                                    <td class="slr-name">MOYENNE (14 SLR)</td>
+                                    <td style="text-align: center;">-</td>
+                                    <td style="background: #d0e5f5;">0.85</td>
+                                    <td style="background: #d0e5f5;">0.43</td>
+                                    <td style="background: #d4edda;">0.72</td>
+                                    <td style="background: #d4edda;">0.66</td>
+                                    <td style="background: #e1bee7;">0.81</td>
+                                    <td style="background: #e1bee7;">0.50</td>
+                                    <td style="background: #ffe0b2;">0.86</td>
+                                    <td style="background: #ffe0b2;">0.44</td>
+                                    <td style="background: #f3e5f5;">0.51</td>
+                                    <td style="background: #f3e5f5;">0.44</td>
+                                    <td style="background: #b2dfdb;">0.81</td>
+                                    <td style="background: #b2dfdb;">0.49</td>
+                                    <td style="background: #c8e6c9;">0.73</td>
+                                    <td style="background: #c8e6c9;">0.62</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Observations multi-modèles -->
+                    <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div style="padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #5a9bd5;">
+                            <h4 style="color: #1565C0; margin-bottom: 8px; font-size: 0.95em;">Q3=2 (Collègue)</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> 0.85 | <strong>TNR:</strong> 0.43</p>
+                            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">Excellent TPR, TNR faible</p>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #70ad47;">
+                            <h4 style="color: #2E7D32; margin-bottom: 8px; font-size: 0.95em;">Q3+S (Collègue)</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> 0.72 | <strong>TNR:</strong> 0.66</p>
+                            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">Bon équilibre</p>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #f3e5f5; border-radius: 8px; border-left: 4px solid #b39ddb;">
+                            <h4 style="color: #7b1fa2; margin-bottom: 8px; font-size: 0.95em;">ML</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> 0.81 | <strong>TNR:</strong> 0.50</p>
+                            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">Bon TPR, TNR moyen</p>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ff9800;">
+                            <h4 style="color: #f57c00; margin-bottom: 8px; font-size: 0.95em;">Qwen (Massinissa)</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> <strong>0.86 🥇</strong> | <strong>TNR:</strong> 0.44</p>
+                            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">Meilleur TPR, TNR faible</p>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #fce4ec; border-radius: 8px; border-left: 4px solid #ab47bc;">
+                            <h4 style="color: #7b1fa2; margin-bottom: 8px; font-size: 0.95em;">Qwen Canada</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> 0.51 | <strong>TNR:</strong> 0.44</p>
+                            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">Performances faibles</p>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #e0f2f1; border-radius: 8px; border-left: 4px solid #26a69a;">
+                            <h4 style="color: #00796b; margin-bottom: 8px; font-size: 0.95em;">GPT-4o</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> 0.81 | <strong>TNR:</strong> 0.49</p>
+                            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">Similaire à ML</p>
+                        </div>
+                        
+                        <div style="padding: 15px; background: #c8e6c9; border-radius: 8px; border-left: 4px solid #4CAF50; border: 2px solid #4CAF50;">
+                            <h4 style="color: #1B5E20; margin-bottom: 8px; font-size: 0.95em;">🎯 Votre P3-QW</h4>
+                            <p style="margin: 3px 0; font-size: 0.9em;"><strong>TPR:</strong> 0.73 | <strong>TNR:</strong> <strong>0.62 🥇</strong></p>
+                            <p style="font-size: 0.85em; font-weight: bold; color: #1B5E20; margin-top: 8px;">Meilleur équilibre global</p>
+                        </div>
+                    </div>
+
+                    <!-- Note sur les résultats atypiques -->
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <p style="color: #856404; margin: 0;"><strong>⚠️ Notes importantes :</strong></p>
+                        <ul style="color: #856404; margin: 10px 0 0 20px;">
+                            <li>Les SLR <strong>Tachy_SOTA_LW</strong> et <strong>Teranga_2023_LW</strong> présentent des résultats atypiques pour P3-QW (TPR ~2-6%) et Q3+S</li>
+                            <li>Sur les 12 autres SLR, <strong>P3-QW maintient le meilleur TNR (0.62) de tous les modèles</strong></li>
+                            <li><strong>P3-QW et Q3+S sont les seuls modèles à approcher l'objectif TNR ≥ 70%</strong></li>
+                            <li><strong>Qwen (Massinissa) obtient le meilleur TPR global (0.86)</strong> mais au détriment du TNR</li>
+                        </ul>
+                    </div>
+                </div>
+            
+            </div>
+
+
+        <!-- ANNEXE - PROMPTS COMPLETS -->
+        <div class="section" style="page-break-before: always;">
+            <h2>📋 Annexe - Texte Complet des Prompts Testés</h2>
+            
+            <p style="margin-bottom: 30px; font-style: italic; color: #666;">
+                Cette annexe contient le texte intégral de tous les prompts développés et testés dans le cadre de cette étude comparative.
+            </p>
+
+            <!-- PROMPT  -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #70ad47;">
+                <h3 style="color: #70ad47; margin-bottom: 15px;">📝 Prompt Canada</h3>
+                <p><strong>Objectif :</strong> Approche par échelle de gradation</p>
+
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">
+                        """You are a researcher rigorously screening titles and abstracts of scientific papers for
+                        inclusion or exclusion in a review paper. Based on the following article title and abstract,
+                        and the inclusion criteria provided, determine how likely this article is to be relevant.
+                         
+                        INCLUSION CRITERIA:
+                        - Population: {population}
+                        - Indication: {indication}
+                        - Intervention: {intervention}
+                        - Comparison: {comparison}
+                        - Outcomes: {outcome}
+                         
+                        EXCLUSION CRITERIA:
+                        Studies explicitly about {excludes} are always excluded.
+                         
+                        ARTICLE TO SCREEN:
+                        Title: {title}
+                        Abstract: {abstract}
+                         
+                        Based on your assessment, determine the likelihood of relevance using ONE of these exact phrases:
+                        - "Almost certain"
+                        - "Extremely likely"
+                        - "Very likely"
+                        - "Likely"
+                        - "About as likely as not"
+                        - "Unlikely"
+                        - "Very unlikely"
+                        - "Extremely unlikely"
+                        - "Almost impossible"
+                        """</pre>
+                </div>
+            </div>
+
+
+            <!-- PROMPT -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #70ad47;">
+                <h3 style="color: #70ad47; margin-bottom: 15px;">Picos-ref (que picos Massinissa) </h3>
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">
+                                user_prompt = f"""
+                        Task: Screen the article vs PICOS. Return ONLY one JSON object.
+                        
+                        Title: {title}
+                        Abstract: {abstract}
+                        
+                        - Decision Rules:
+                        * Include ("Decision": "1") if:
+                            - The study clearly matches ** MOST ** inclusion criteria
+                            - Indication category, if present, is a strong match
+                            - Similar concepts or procedures are described
+                            - No major inclusion criteria are explicitly contradicted
+                            - No clear exclusion criteria are met
+                        * Exclude ("Decision": "0") if:
+                            - The study clearly contradicts key inclusion criteria
+                            - OR matches any explicit exclusion criteria
+                        
+                        Rules you must follow when producing the JSON:
+                        - For each PICOS category (Population, Intervention, Indication, Comparators, Outcomes, Study TYPE) list ONLY the matched term(s)
+                        extracted from the title or abstract. If none matched, write \"no match\".
+                        - If you use a synonym or related mapping, show the original found text followed by \"-> maps_to (target)\".
+                        - Do NOT repeat the full criteria lists, do NOT output items that were not found in the text.
+                        
+                        Return JSON schema:
+                        {{
+                        \"Decision\": \"1\" or \"0\",
+                        \"Justification\": [
+                            \"Population: <found terms or no match>\",
+                            \"Intervention: <found terms or no match>\",
+                            \"Indication: <found terms or no match>\",
+                            \"Comparators: <found terms or no match>\",
+                            \"Outcomes: <found terms or no match>\",
+                            \"Study Type: <found terms or no match>\"
+                        ]
+                        }}
+                        
+                        Inclusion PICOS (for reference, DO NOT repeat):
+                        Inclusion Population: {picos['Inclusion POPULATION']}
+                        Inclusion Intervention: {picos['Inclusion INTERVENTION']}
+                        Inclusion Indication: {picos['Inclusion INDICATION']}
+                        Inclusion Comparators: {picos['Inclusion COMPARATORS']}
+                        Inclusion Outcomes: {picos['Inclusion OUTCOMES']}
+                        Inclusion Study Type: {picos['Inclusion STUDY TYPE']}
+                        
+                        Exclusion PICOS (for reference, DO NOT repeat):
+                        Exclusion Population: {picos['Exclusion POPULATION']}
+                        Exclusion Intervention: {picos['Exclusion INTERVENTION']}
+                        Exclusion Indication: {picos['Exclusion INDICATION']}
+                        Exclusion Comparators: {picos['Exclusion COMPARATORS']}
+                        Exclusion Outcomes: {picos['Exclusion OUTCOMES'] }
+                        Exclusion Study Type: {picos['Exclusion STUDY TYPE']}
+                        """
+                    </pre>
+                </div>
+            </div>
+
+
+            <!-- PROMPT -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #70ad47;">
+                <h3 style="color: #70ad47; margin-bottom: 15px;">PICOS+SUJET Massinissa Picos ref + sujet </h3>
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                </div>
+            </div>
+
+
+
+
+
+            <!-- PROMPT 1 -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #70ad47;">
+                <h3 style="color: #70ad47; margin-bottom: 15px;">📝 Prompt 1 - Scoring PICOS Détaillé</h3>
+                <p><strong>Objectif :</strong> Approche structurée avec système de scoring par catégories PICOS</p>
+                <p><strong>Modèles testés :</strong> ML, Qwen | <strong>Résultats :</strong> ML: TPR=0.77, TNR=0.59 | Qwen: TPR=0.63, TNR=0.69</p>
+                
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">PROMPT_TEMPLATE = """
+
+                        
+        """</pre>
+                </div>
+            </div>
+
+
+
+
+
+
+            <!-- PROMPT 1 -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #70ad47;">
+                <h3 style="color: #70ad47; margin-bottom: 15px;">📝 Prompt 1 - Scoring PICOS Détaillé</h3>
+                <p><strong>Objectif :</strong> Approche structurée avec système de scoring par catégories PICOS</p>
+                <p><strong>Modèles testés :</strong> ML, Qwen | <strong>Résultats :</strong> ML: TPR=0.77, TNR=0.59 | Qwen: TPR=0.63, TNR=0.69</p>
+                
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">PROMPT_TEMPLATE = """You are an expert biomedical article reviewer performing screening for a systematic literature review.
+
+        YOUR PRIMARY GOAL: Achieve HIGH SENSITIVITY (TPR ≥ 80%) while maintaining HIGH SPECIFICITY (TNR ≥ 70%).
+
+        CRITICAL PHILOSOPHY: 
+        "INCLUDE unless there's a CLEAR reason to EXCLUDE"
+        This means: favor inclusion when uncertain, but be STRICT with exclusions.
+
+        ═══════════════════════════════════════════════════════════════
+        STEP 1: PICOS ELEMENT IDENTIFICATION (FLEXIBLE MATCHING)
+        ═══════════════════════════════════════════════════════════════
+
+        RESEARCH TOPIC: {topic}
+
+        INCLUSION CRITERIA (Interpret BROADLY - consider synonyms and related concepts):
+        - Population: {population}
+        - Indication/Condition: {indication}
+        - Intervention/Exposure: {intervention}
+        - Comparators: {comparison}
+        - Outcomes: {outcome}
+        - Study Type: {study_type}
+
+        EXCLUSION CRITERIA (Interpret STRICTLY - these are absolute deal-breakers):
+        {exclusion_text}
+
+        For each PICOS element, identify ANY related terms:
+        - Direct matches (exact terms)
+        - Synonyms and related concepts
+        - Contextually relevant mentions
+        - Mark "no_match" ONLY if clearly irrelevant
+
+        ═══════════════════════════════════════════════════════════════
+        STEP 2: RELEVANCE SCORING (GENEROUS BASELINE)
+        ═══════════════════════════════════════════════════════════════
+
+        Score the study's potential relevance:
+
+        A. TOPIC ALIGNMENT (30 points):
+        - Clearly related: 30 points
+        - Somewhat related: 20 points
+        - Potentially related: 15 points
+        - Not related: 0 points
+        
+        B. PICOS COVERAGE (50 points):
+        - Population: Strong=15, Moderate=12, Weak=8, Any mention=5, None=0
+        - Indication: Strong=15, Moderate=12, Weak=8, Any mention=5, None=0
+        - Intervention: Strong=15, Moderate=12, Weak=8, Any mention=5, None=0
+        - Outcomes: Explicit=5, Implied=3, None=0
+        
+        C. STUDY UTILITY (20 points):
+        - Original research with data: 20 points
+        - Clinical study/trial: 15 points
+        - Review/meta-analysis: 12 points
+        - Case report/case series: 8 points
+        - Editorial with data: 5 points
+        - Opinion only: 0 points
+
+        TOTAL SCORE: ___/100
+
+        IMPORTANT: Be GENEROUS with scoring. When in doubt between two score levels, choose the HIGHER one.
+
+        ═══════════════════════════════════════════════════════════════
+        STEP 3: EXCLUSION CHECKPOINT (STRICT BUT FAIR)
+        ═══════════════════════════════════════════════════════════════
+
+        MANDATORY EXCLUSION - Check each criterion carefully:
+
+        □ EXPLICITLY matches exclusion criteria (not just tangentially related)
+        □ Population is COMPLETELY WRONG (e.g., animals when humans required)
+        □ Intervention is ENTIRELY DIFFERENT (not just a variation)
+        □ CLEARLY states it's NOT a research study (pure opinion/editorial/commentary)
+        □ Topic is COMPLETELY UNRELATED to research question
+
+        CRITICAL: Only check boxes if you're CERTAIN. If uncertain, do NOT check.
+        If NO boxes checked → Proceed to decision rules
+        If ANY box checked → EXCLUDE with high confidence
+
+        ═══════════════════════════════════════════════════════════════
+        FINAL DECISION RULES (OPTIMIZED FOR TPR ≥ 80% and TNR ≥ 70%)
+        ═══════════════════════════════════════════════════════════════
+
+        **INCLUDE** (decision: "include", confidence: 0.7-1.0) if:
+        ✓ Total score ≥ 60/100
+        ✓ At least 2/6 PICOS elements matched
+        ✓ NO mandatory exclusion criteria triggered
+        ✓ Study appears to have ANY research data
+
+        RATIONALE: Lower threshold captures more true positives (↑TPR)
+
+        **INCLUDE WITH LOW CONFIDENCE** (decision: "include", confidence: 0.5-0.69) if:
+        ✓ Total score 40-59/100
+        ✓ At least 1/6 PICOS elements matched (but seems relevant to topic)
+        ✓ NO mandatory exclusion criteria triggered
+
+        RATIONALE: Very inclusive for edge cases to maximize TPR
+
+        **EXCLUDE** (decision: "exclude", confidence: 0.8-1.0) if:
+        ✗ Total score < 40/100 AND fewer than 2 PICOS matched
+        ✗ OR ANY mandatory exclusion criterion triggered
+        ✗ OR clearly no research data/results
+
+        RATIONALE: Only exclude when CERTAIN it's not relevant (↑TNR)
+
+        **REVIEW** (decision: "review", confidence: 0.3-0.5) if:
+        ? Score exactly 40/100 with 1 PICOS match
+        ? Ambiguous whether exclusion criteria apply
+
+        RATIONALE: Use sparingly - only for truly ambiguous cases (< 5%)
+
+        ═══════════════════════════════════════════════════════════════
+
+        ARTICLE TO SCREEN:
+        Title: {title}
+        Abstract: {abstract}
+
+        ═══════════════════════════════════════════════════════════════
+
+        OUTPUT FORMAT (RETURN ONLY VALID JSON - NO MARKDOWN):
+
+        {{
+        "decision": "include|exclude|review",
+        "confidence": 0.85,
+        "scoring": {{
+            "topic_alignment": 25,
+            "picos_coverage": 40,
+            "study_utility": 15,
+            "total_score": 80
+        }},
+        "picos_matches": {{
+            "population": ["term1 (broadly interpreted)", "term2 → synonym of [criterion]"],
+            "indication": ["term found"],
+            "intervention": ["term found"],
+            "comparators": ["no_match"],
+            "outcomes": ["term found or implied"],
+            "study_type": ["research type"]
+        }},
+        "exclusion_triggered": false,
+        "exclusion_reasons": [],
+        "justification": "Brief explanation (max 40 words): why included/excluded.",
+        "key_evidence": ["quote 1 from abstract", "quote 2 supporting decision"]
+        }}
+
+        FINAL CHECKLIST BEFORE RESPONDING:
+        ☐ Did I interpret PICOS broadly to maximize matches?
+        ☐ Did I score generously (when uncertain, chose higher score)?
+        ☐ Did I check exclusions STRICTLY (certain they apply)?
+        ☐ Is my decision consistent with TPR ≥ 80% and TNR ≥ 70% goals?
+        """</pre>
+                </div>
+            </div>
+
+            <!-- PROMPT 2 -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #e67e22;">
+                <h3 style="color: #e67e22; margin-bottom: 15px;">📝 Prompt 2 - Approche Simplifiée Binaire</h3>
+                <p><strong>Objectif :</strong> Simplification du prompt avec décision binaire directe</p>
+                <p><strong>Modèles testés :</strong> ML, Qwen | <strong>Résultats :</strong> ML: TPR=0.75, TNR=0.48 | Qwen: TPR=0.63, TNR=0.68</p>
+                
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">prompt = f"""You are screening biomedical studies using title and abstract only.
+        Decide: "include", "exclude", or "review".
+
+        SCREENING GOAL:
+        - Maximize true inclusions.
+        - Apply exclusions strictly.
+
+        INCLUSION SIGNALS (broad, allow synonyms):
+        - Population: {pop if pop else "not specified"}
+        - Indication/Condition: {ind if ind else "not specified"}
+        - Intervention/Exposure: {itv if itv else "not specified"}
+        - Comparison: {cmp if cmp else "not specified"}
+        - Outcomes: {out if out else "not specified"}
+        - Study type: {sty if sty else "not specified"}
+
+        EXCLUSIONS (hard, strict): {exc if exc else "none specified"}
+
+        DECISION RULES:
+        1) If any exclusion clearly applies -> decision="exclude".
+        2) Else, count PICO matches found in the text (Population, Indication, Intervention, Comparison, Outcomes, Study type). 
+        Consider synonyms and paraphrases. Weak or implied mentions count.
+        If ≥2 elements match and the study is about the topic, prefer decision="include".
+        If evidence is insufficient or ambiguous, decision="review".
+        3) No external knowledge. Use only the text.
+
+        OUTPUT JSON ONLY, NO MARKDOWN:
+        {{
+        "decision": "include|exclude|review",
+        "confidence": 0.0-1.0,
+        "matches": {{
+            "population": ["matched term(s)" or "no_match"],
+            "indication": ["..."],
+            "intervention": ["..."],
+            "comparison": ["..."],
+            "outcomes": ["..."],
+            "study_type": ["..."]
+        }},
+        "exclusions_triggered": ["reason(s)" or []],
+        "justification": "≤40 words. Plain, factual.",
+        "evidence": ["short quote ≤12 words", "short quote ≤12 words"]
+        }}
+
+        TEXT TO SCREEN:
+        Title: {title if title else "[No Title]"}
+        Abstract: {abstract if abstract else "[No Abstract]"}
+        """</pre>
+                </div>
+            </div>
+
+            <!-- PROMPT 3 -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #4CAF50;">
+                <h3 style="color: #4CAF50; margin-bottom: 15px;">📝 Prompt 3 - Optimisé pour le Recall (PICOS seul)</h3>
+                <p><strong>Objectif :</strong> Maximiser la sensibilité avec gestion des négations et scoring adaptatif</p>
+                <p><strong>Modèles testés :</strong> Qwen | <strong>Résultats :</strong> ML: TPR=0.79, TNR=0.46 | <strong style="color: #4CAF50;">Qwen: TPR=0.84 ✓, TNR=0.52</strong></p>
+                
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">system_msg = (
+            "You are a screening assistant.\n"
+            "Return EXACTLY one JSON object and NOTHING else.\n"
+            "List ONLY verbatim matches from Title/Abstract per PICOS category.\n"
+            "If mapping via synonym, use 'found_term -> maps_to (criterion)'.\n"
+            "If no match, write 'no match'. Handle negations within ±20 chars.\n"
+            "Trigger exclusion ONLY on clear non-negated matches to critical exclusions."
+        )
+
+        user_prompt = f"""
+        Task: Screen the article vs PICOS. Output ONLY one JSON object.
+        Title: {t}
+        Abstract: {a}
+
+        Decision policy:
+        1) Critical exclusions first: if a clear, non-negated match to ANY of [{excl_str}] → Decision="0".
+        2) Inclusion scoring:
+        - +1 for each PICOS category with ≥1 positive match (Population, Intervention, Indication, Comparators, Outcomes, StudyType).
+        - +{BONUS_IND_INT} extra if Indication AND Intervention both match.
+        - 0 if "no match" or only negated mentions.
+        3) Threshold:
+        - If score ≥ {INCLUDE_THRESHOLD} and no critical exclusion → Decision="1"
+        - Else → Decision="0"
+
+        If uncertain but relevant to the research topic, favor inclusion during matching.
+
+        Output (single JSON object):
+        {{
+        "Decision": "1" | "0",
+        "Score": <int>,
+        "Matches": {{
+            "Population": [{{"text":"<verbatim>","negated":true|false,"mapping":"<optional>"}}]] | "no match",
+            "Intervention": [ ... ] | "no match",
+            "Indication": [ ... ] | "no match",
+            "Comparators": [ ... ] | "no match",
+            "Outcomes": [ ... ] | "no match",
+            "StudyType": [ ... ] | "no match"
+        }},
+        "ExclusionsTriggered": [{{"text":"<verbatim>","reason":"<critical exclusion>"}}] | []
+        }}
+
+        Reference PICOS (do NOT repeat contents; only use for matching):
+        Research question: {topic}
+        Inclusion Population: {picos_prompt['Inclusion POPULATION']}
+        Inclusion Intervention: {picos_prompt['Inclusion INTERVENTION']}
+        Inclusion Indication: {picos_prompt['Inclusion INDICATION']}
+        Inclusion Comparators: {picos_prompt['Inclusion COMPARATORS']}
+        Inclusion Outcomes: {picos_prompt['Inclusion OUTCOMES']}
+        Inclusion Study Type: {picos_prompt['Inclusion STUDY TYPE']}
+        Exclusion Population: {picos_prompt['Exclusion POPULATION']}
+        Exclusion Intervention: {picos_prompt['Exclusion INTERVENTION']}
+        Exclusion Indication: {picos_prompt['Exclusion INDICATION']}
+        Exclusion Comparators: {picos_prompt['Exclusion COMPARATORS']}
+        Exclusion Outcomes: {picos_prompt['Exclusion OUTCOMES']}
+        Exclusion Study Type: {picos_prompt['Exclusion STUDY TYPE']}
+        """
+
+        return f"<<SYSTEM>>\n{system_msg}\n<</SYSTEM>>\n\n{user_prompt}".strip()</pre>
+                </div>
+            </div>
+
+            <!-- PROMPT 3 + SUJET -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #388E3C;">
+                <h3 style="color: #388E3C; margin-bottom: 15px;">📝 Prompt 3 + Sujet - Avec Contexte de Recherche</h3>
+                <p><strong>Objectif :</strong> Même architecture que Prompt3 mais avec ajout du sujet de recherche pour améliorer la spécificité</p>
+                <p><strong>Modèles testés :</strong> Qwen | <strong>Résultats :</strong> TPR=0.72, TNR=0.62 (meilleur équilibre que Prompt3 seul)</p>
+                
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px;">
+                    <p style="font-style: italic; color: #666;">
+                        ℹ️ Identique au Prompt 3, mais le sujet de recherche est fourni en plus des critères PICOS dans le contexte.
+                        Cela permet au modèle de mieux comprendre la pertinence globale de l'article par rapport au thème de la revue systématique.
+                    </p>
+                </div>
+            </div>
+
+            <!-- PROMPT 4 -->
+            <div style="margin-bottom: 40px; padding: 25px; background: #e1f5fe; border-radius: 10px; border-left: 5px solid #2196F3; border: 2px solid #2196F3;">
+                <h3 style="color: #2196F3; margin-bottom: 15px;">🏆 Prompt 4 - Topic Relevance Gate (Meilleur Équilibre)</h3>
+                <p><strong>Objectif :</strong> Ajout d'un filtre de pertinence thématique pour améliorer l'équilibre TPR/TNR</p>
+                <p><strong>Modèles testés :</strong> Qwen | <strong style="color: #2196F3;">Résultats : TPR=0.77, TNR=0.67, Équilibre=0.72 🏆</strong></p>
+                
+                <div style="margin-top: 15px; padding: 20px; background: white; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.6; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap;">system_msg = (
+            "You are a screening assistant.\n"
+            "Return EXACTLY one JSON object and NOTHING else.\n"
+            "List ONLY verbatim matches from Title/Abstract per PICOS category.\n"
+            "If mapping via synonym, use 'found_term -> maps_to (criterion)'.\n"
+            "If no match, write 'no match'. Handle negations within ±20 chars.\n"
+            "Trigger exclusion ONLY on clear non-negated matches to critical exclusions.\n"
+            "Topic Relevance Gate: Only exclude as off-topic if the Title and Abstract are clearly unrelated to the research topic "
+            "AND there is NO clear match in Indication OR Intervention. Otherwise, proceed with normal decision rules."
+        )
+
+        user_prompt = f"""
+        Task: Determine whether the article addresses the following research topic and meets the PICOS criteria.
+
+        Research Topic:
+        {topic}
+
+        Title: {t}
+        Abstract: {a}
+
+        Reasoning guide:
+        - Start by checking if the study is *conceptually related* to the research topic, even if terminology differs.
+        - Use synonyms and paraphrases that clearly refer to the same clinical or technical problem.
+        - Favor inclusion if the article could contribute useful evidence to this topic.
+        - Apply the Topic Relevance Gate: if the article is clearly off-topic AND has no clear Indication or Intervention match, exclude it (Decision="0"). Otherwise, continue as usual.
+
+        Decision policy:
+        1) Critical exclusions first: if a clear, non-negated match to ANY of [{excl_str}] → Decision="0".
+        2) Inclusion scoring:
+        - +1 for each PICOS category with ≥1 positive match (Population, Intervention, Indication, Comparators, Outcomes, StudyType).
+        - +1 extra if Indication AND Intervention both match.
+        - +1 extra if the study is directly related to the research topic.
+        3) Threshold:
+        - If score ≥ {INCLUDE_THRESHOLD} and no critical exclusion → Decision="1"
+        - Else → Decision="0"
+
+        If uncertain but relevant to the topic, favor inclusion.
+
+        Output (single JSON object):
+        {{
+        "Decision": "1" | "0",
+        "Score": <int>,
+        "Matches": {{
+            "Population": [{{"text":"<verbatim>","negated":true|false,"mapping":"<optional>"}}]] | "no match",
+            "Intervention": [ ... ] | "no match",
+            "Indication": [ ... ] | "no match",
+            "Comparators": [ ... ] | "no match",
+            "Outcomes": [ ... ] | "no match",
+            "StudyType": [ ... ] | "no match"
+        }},
+        "ExclusionsTriggered": [{{"text":"<verbatim>","reason":"<critical exclusion>"}}] | []
+        }}
+
+        Reference PICOS (for matching only):
+        Inclusion Population: {picos_prompt['Inclusion POPULATION']}
+        Inclusion Intervention: {picos_prompt['Inclusion INTERVENTION']}
+        Inclusion Indication: {picos_prompt['Inclusion INDICATION']}
+        Inclusion Comparators: {picos_prompt['Inclusion COMPARATORS']}
+        Inclusion Outcomes: {picos_prompt['Inclusion OUTCOMES']}
+        Inclusion Study Type: {picos_prompt['Inclusion STUDY TYPE']}
+        Exclusion Population: {picos_prompt['Exclusion POPULATION']}
+        Exclusion Intervention: {picos_prompt['Exclusion INTERVENTION']}
+        Exclusion Indication: {picos_prompt['Exclusion INDICATION']}
+        Exclusion Comparators: {picos_prompt['Exclusion COMPARATORS']}
+        Exclusion Outcomes: {picos_prompt['Exclusion OUTCOMES']}
+        Exclusion Study Type: {picos_prompt['Exclusion STUDY TYPE']}
+        """
+
+        return f"<<SYSTEM>>\n{system_msg}\n<</SYSTEM>>\n\n{user_prompt}".strip()</pre>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Data with Prompt3 and Prompt3+Subject (Qwen only)
+        const slrData = [
+            {name: "DIA LARM BS", q32_tpr: 0.72, q32_tnr: 0.62, q3s_tpr: 0.83, q3s_tnr: 0.55, p1qw_tpr: 0.39, p1qw_tnr: 0.88, p2qw_tpr: 0.06, p2qw_tnr: 1.00, p3qw_tpr: 0.92, p3qw_tnr: 0.82, p3sqw_tpr: 0.92, p3sqw_tnr: 0.68, p4qw_tpr: 1.00, p4qw_tnr: 0.71},
+            {name: "LUNG CANCER LB", q32_tpr: 0.96, q32_tnr: 0.62, q3s_tpr: 0.94, q3s_tnr: 0.71, p1qw_tpr: 0.94, p1qw_tnr: 0.62, p2qw_tpr: 0.89, p2qw_tnr: 0.87, p3qw_tpr: 0.91, p3qw_tnr: 0.74, p3sqw_tpr: 0.69, p3sqw_tnr: 0.93, p4qw_tpr: 0.73, p4qw_tnr: 0.92},
+            {name: "PCL EL", q32_tpr: 0.48, q32_tnr: 0.77, q3s_tpr: 0.48, q3s_tnr: 0.87, p1qw_tpr: 0.48, p1qw_tnr: 0.77, p2qw_tpr: 0.24, p2qw_tnr: 0.92, p3qw_tpr: 0.38, p3qw_tnr: 0.88, p3sqw_tpr: 0.34, p3sqw_tnr: 0.85, p4qw_tpr: 0.57, p4qw_tnr: 0.87},
+            {name: "REVIEW RESORBABLE POLYCAPROLACTONE EL", q32_tpr: 0.91, q32_tnr: 0.44, q3s_tpr: 0.93, q3s_tnr: 0.48, p1qw_tpr: 0.91, p1qw_tnr: 0.44, p2qw_tpr: 0.75, p2qw_tnr: 0.75, p3qw_tpr: 0.95, p3qw_tnr: 0.41, p3sqw_tpr: 0.95, p3sqw_tnr: 0.40, p4qw_tpr: 0.91, p4qw_tnr: 0.45},
+            {name: "SOTA ICD BS", q32_tpr: 0.75, q32_tnr: 0.00, q3s_tpr: 1.00, q3s_tnr: 0.50, p1qw_tpr: 0.75, p1qw_tnr: 0.00, p2qw_tpr: 0.50, p2qw_tnr: 0.50, p3qw_tpr: 0.75, p3qw_tnr: 0.00, p3sqw_tpr: 0.50, p3sqw_tnr: 0.50, p4qw_tpr: 0.50, p4qw_tnr: 0.50},
+            {name: "SOTA RM GH", q32_tpr: 1.00, q32_tnr: 0.02, q3s_tpr: 1.00, q3s_tnr: 0.30, p1qw_tpr: 1.00, p1qw_tnr: 0.02, p2qw_tpr: 1.00, p2qw_tnr: 0.42, p3qw_tpr: 0.95, p3qw_tnr: 0.27, p3sqw_tpr: 0.95, p3sqw_tnr: 0.40, p4qw_tpr: 0.86, p4qw_tnr: 0.59},
+            {name: "WHEELCHAIR BS", q32_tpr: 1.00, q32_tnr: 0.31, q3s_tpr: 0.41, q3s_tnr: 0.84, p1qw_tpr: 1.00, p1qw_tnr: 0.31, p2qw_tpr: 0.58, p2qw_tnr: 0.62, p3qw_tpr: 1.00, p3qw_tnr: 0.49, p3sqw_tpr: 0.75, p3sqw_tnr: 0.62, p4qw_tpr: 0.83, p4qw_tnr: 0.62}
+        ];
+
+        // Populate table
+        const tbody = document.getElementById('slr-table-body');
+        let sum_q32_tpr = 0, sum_q32_tnr = 0, sum_q3s_tpr = 0, sum_q3s_tnr = 0;
+        let sum_p1qw_tpr = 0, sum_p1qw_tnr = 0, sum_p2qw_tpr = 0, sum_p2qw_tnr = 0;
+        let sum_p3qw_tpr = 0, sum_p3qw_tnr = 0, sum_p3sqw_tpr = 0, sum_p3sqw_tnr = 0;
+        let sum_p4qw_tpr = 0, sum_p4qw_tnr = 0;
+        let count_q32 = 0, count_q3s = 0, count_p1qw = 0, count_p2qw = 0;
+        let count_p3qw = 0, count_p3sqw = 0, count_p4qw = 0;
+
+        slrData.forEach(slr => {
+            const row = tbody.insertRow();
+            const cells = [
+                slr.name,
+                slr.q32_tpr !== null ? slr.q32_tpr.toFixed(2) : '-',
+                slr.q32_tnr !== null ? slr.q32_tnr.toFixed(2) : '-',
+                slr.q3s_tpr !== null ? slr.q3s_tpr.toFixed(2) : '-',
+                slr.q3s_tnr !== null ? slr.q3s_tnr.toFixed(2) : '-',
+                slr.p1qw_tpr !== null ? slr.p1qw_tpr.toFixed(2) : '-',
+                slr.p1qw_tnr !== null ? slr.p1qw_tnr.toFixed(2) : '-',
+                slr.p2qw_tpr !== null ? slr.p2qw_tpr.toFixed(2) : '-',
+                slr.p2qw_tnr !== null ? slr.p2qw_tnr.toFixed(2) : '-',
+                slr.p3qw_tpr !== null ? slr.p3qw_tpr.toFixed(2) : '-',
+                slr.p3qw_tnr !== null ? slr.p3qw_tnr.toFixed(2) : '-',
+                slr.p3sqw_tpr !== null ? slr.p3sqw_tpr.toFixed(2) : '-',
+                slr.p3sqw_tnr !== null ? slr.p3sqw_tnr.toFixed(2) : '-',
+                slr.p4qw_tpr !== null ? slr.p4qw_tpr.toFixed(2) : '-',
+                slr.p4qw_tnr !== null ? slr.p4qw_tnr.toFixed(2) : '-'
+            ];
+            
+            cells.forEach((cell, idx) => {
+                const td = row.insertCell();
+                td.textContent = cell;
+                if (idx === 0) {
+                    td.className = 'slr-name';
+                } else if (idx >= 7 && idx <= 8) {
+                    td.style.background = '#fef5e7';
+                } else if (idx >= 9 && idx <= 10) {
+                    td.style.background = '#e8f5e9';
+                } else if (idx >= 11 && idx <= 12) {
+                    td.style.background = '#c8e6c9';
+                } else if (idx >= 13) {
+                    td.style.background = '#e1f5fe';
+                }
+            });
+            
+            if (slr.q32_tpr !== null) { sum_q32_tpr += slr.q32_tpr; count_q32++; }
+            if (slr.q32_tnr !== null) sum_q32_tnr += slr.q32_tnr;
+            if (slr.q3s_tpr !== null) { sum_q3s_tpr += slr.q3s_tpr; count_q3s++; }
+            if (slr.q3s_tnr !== null) sum_q3s_tnr += slr.q3s_tnr;
+            if (slr.p1qw_tpr !== null) { sum_p1qw_tpr += slr.p1qw_tpr; count_p1qw++; }
+            if (slr.p1qw_tnr !== null) sum_p1qw_tnr += slr.p1qw_tnr;
+            if (slr.p2qw_tpr !== null) { sum_p2qw_tpr += slr.p2qw_tpr; count_p2qw++; }
+            if (slr.p2qw_tnr !== null) sum_p2qw_tnr += slr.p2qw_tnr;
+            if (slr.p3qw_tpr !== null) { sum_p3qw_tpr += slr.p3qw_tpr; count_p3qw++; }
+            if (slr.p3qw_tnr !== null) sum_p3qw_tnr += slr.p3qw_tnr;
+            if (slr.p3sqw_tpr !== null) { sum_p3sqw_tpr += slr.p3sqw_tpr; count_p3sqw++; }
+            if (slr.p3sqw_tnr !== null) sum_p3sqw_tnr += slr.p3sqw_tnr;
+            if (slr.p4qw_tpr !== null) { sum_p4qw_tpr += slr.p4qw_tpr; count_p4qw++; }
+            if (slr.p4qw_tnr !== null) sum_p4qw_tnr += slr.p4qw_tnr;
+        });
+
+        // Add average row
+        const avgRow = tbody.insertRow();
+        avgRow.className = 'avg-row';
+        const avgCells = [
+            'MOYENNE',
+            count_q32 > 0 ? (sum_q32_tpr / count_q32).toFixed(2) : '-',
+            count_q32 > 0 ? (sum_q32_tnr / count_q32).toFixed(2) : '-',
+            count_q3s > 0 ? (sum_q3s_tpr / count_q3s).toFixed(2) : '-',
+            count_q3s > 0 ? (sum_q3s_tnr / count_q3s).toFixed(2) : '-',
+            count_p1qw > 0 ? (sum_p1qw_tpr / count_p1qw).toFixed(2) : '-',
+            count_p1qw > 0 ? (sum_p1qw_tnr / count_p1qw).toFixed(2) : '-',
+            count_p2qw > 0 ? (sum_p2qw_tpr / count_p2qw).toFixed(2) : '-',
+            count_p2qw > 0 ? (sum_p2qw_tnr / count_p2qw).toFixed(2) : '-',
+            count_p3qw > 0 ? (sum_p3qw_tpr / count_p3qw).toFixed(2) : '-',
+            count_p3qw > 0 ? (sum_p3qw_tnr / count_p3qw).toFixed(2) : '-',
+            count_p3sqw > 0 ? (sum_p3sqw_tpr / count_p3sqw).toFixed(2) : '-',
+            count_p3sqw > 0 ? (sum_p3sqw_tnr / count_p3sqw).toFixed(2) : '-',
+            count_p4qw > 0 ? (sum_p4qw_tpr / count_p4qw).toFixed(2) : '-',
+            count_p4qw > 0 ? (sum_p4qw_tnr / count_p4qw).toFixed(2) : '-'
+        ];
+        
+        avgCells.forEach((cell, idx) => {
+            const td = avgRow.insertCell();
+            td.textContent = cell;
+            if (idx === 0) {
+                td.className = 'slr-name';
+            } else if (idx >= 7 && idx <= 8) {
+                td.style.background = '#f39c12';
+                td.style.color = 'white';
+                td.style.fontWeight = 'bold';
+            } else if (idx >= 9 && idx <= 10) {
+                td.style.background = '#4CAF50';
+                td.style.color = 'white';
+                td.style.fontWeight = 'bold';
+            } else if (idx >= 11 && idx <= 12) {
+                td.style.background = '#388E3C';
+                td.style.color = 'white';
+                td.style.fontWeight = 'bold';
+            } else if (idx >= 13) {
+                td.style.background = '#2196F3';
+                td.style.color = 'white';
+                td.style.fontWeight = 'bold';
+            }
+        });
+
+        // Export to PDF function
+        function exportToPDF() {
+            const button = document.querySelector('.export-btn');
+            button.textContent = '⏳ Génération en cours...';
+            button.disabled = true;
+
+            const element = document.getElementById('report-content');
+            const opt = {
+                margin: 10,
+                filename: 'Rapport_Comparaison_SLR_Complet.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                button.innerHTML = `
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/>
+                    </svg>
+                    Exporter en PDF
+                `;
+                button.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
